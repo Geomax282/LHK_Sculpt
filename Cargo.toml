@@ -1,0 +1,46 @@
+[package]
+name = "lhk_sculpt"
+version = "0.1.0"
+edition = "2021"
+description = "Bild zu Relief: KI-Tiefe und Objekterkennung, objektbasiertes Relief, 3D-Viewer, STL-Export"
+[lib]
+name = "lhk_sculpt"
+path = "src/lib.rs"
+
+[[bin]]
+name = "LHK_Sculpt"
+path = "src/main.rs"
+
+[[bin]]
+name = "lhk_cli"
+path = "src/bin/lhk_cli.rs"
+
+[features]
+default = []
+# Apple-Silicon-GPU-Beschleunigung fuer die Tiefenschaetzung (nur macOS)
+metal = ["candle-core/metal", "candle-nn/metal"]
+
+[dependencies]
+anyhow = "1"
+candle-core = "0.8.0"
+candle-nn = "0.8.0"
+image = { version = "0.25.5", default-features = false, features = ["png", "jpeg", "bmp", "tiff", "webp"] }
+rayon = "1.10"
+eframe = { version = "0.29.1", default-features = false, features = ["wgpu", "default_fonts"] }
+egui = "0.29.1"
+egui-wgpu = "0.29.1"
+wgpu = "22.1"
+bytemuck = { version = "1.19", features = ["derive"] }
+glam = "0.29"
+rfd = "0.15"
+half = "2.4"
+# libjpeg-turbo based JPEG decoder
+mozjpeg = { version = "0.10", default-features = false }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+
+[profile.dev]
+opt-level = 2

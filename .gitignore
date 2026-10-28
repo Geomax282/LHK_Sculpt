@@ -1,0 +1,31 @@
+# Allowlist: only the own source code is versioned. Everything else
+# (model weights, test photos, reference data, build output,
+# portable toolchains) stays local.
+/*
+!/.gitignore
+!/src/
+!/Cargo.toml
+!/Cargo.lock
+!/build_windows.ps1
+!/build_macos.sh
+!/fetch_models.ps1
+!/fetch_models.sh
+!/README.md
+!/THIRD_PARTY_NOTICES.md
+
+# never, even inside src/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.bmp
+*.stl
+*.obj
+*.npy
+*.pth
+*.safetensors
+*.bin
+*.pyd
+*.py
+*.exe
+*.dll
