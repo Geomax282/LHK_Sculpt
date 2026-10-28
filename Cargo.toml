@@ -1,7 +1,8 @@
 [package]
 name = "lhk_sculpt"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
+authors = ["Land & Holzkommando JOL GbR"]
 description = "Bild zu Relief: KI-Tiefe und Objekterkennung, objektbasiertes Relief, 3D-Viewer, STL-Export"
 [lib]
 name = "lhk_sculpt"

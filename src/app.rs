@@ -228,6 +228,7 @@ pub struct App {
     walls: bool,
     camera_fitted: bool,
     page: Page,
+    logo: Option<egui::TextureHandle>,
     status: String,
     log: Vec<String>,
     mesh_stats: String,
@@ -236,6 +237,8 @@ pub struct App {
     /// render, save a snapshot of the 3D view and quit.
     autotest: Option<(PathBuf, PathBuf, u32)>,
 }
+
+const COMPANY: &str = "Land & Holzkommando JOL GbR";
 
 const MODEL_HINT: &str = "Modelldateien nicht gefunden. Bitte einen Ordner wählen, der depth_anything_v2_vits.pth, realesr-animevideov3-x2.bin und BiRefNet (model.safetensors) enthält.";
 
@@ -264,6 +267,11 @@ impl App {
             walls: true,
             camera_fitted: false,
             page: Page::Images,
+            logo: image::load_from_memory(include_bytes!("../assets/icon_256.png")).ok().map(|im| {
+                let im = im.to_rgba8();
+                let ci = egui::ColorImage::from_rgba_unmultiplied([im.width() as usize, im.height() as usize], im.as_raw());
+                cc.egui_ctx.load_texture("logo", ci, Default::default())
+            }),
             status: String::new(),
             log: Vec::new(),
             mesh_stats: String::new(),
@@ -705,7 +713,16 @@ impl App {
         theme::section(ui, "Über");
         theme::inset().show(ui, |ui| {
             ui.set_width(ui.available_width());
-            ui.label(format!("LHK_Sculpt {}", env!("CARGO_PKG_VERSION")));
+            ui.horizontal(|ui| {
+                if let Some(l) = &self.logo {
+                    ui.add(egui::Image::from_texture(egui::load::SizedTexture::new(l.id(), egui::vec2(56.0, 56.0))));
+                }
+                ui.vertical(|ui| {
+                    ui.label(RichText::new(format!("LHK_Sculpt {}", env!("CARGO_PKG_VERSION"))).size(17.0).color(theme::ACCENT));
+                    ui.label(COMPANY);
+                });
+            });
+            ui.add_space(4.0);
             for m in ["Depth Anything V2 Small – Apache-2.0", "BiRefNet – MIT", "Real-ESRGAN – BSD-3-Clause"] {
                 ui.label(RichText::new(m).color(theme::TEXT_DIM));
             }
@@ -877,6 +894,11 @@ impl eframe::App for App {
                 ui.painter().rect_filled(ui.max_rect(), 14.0, theme::PANEL);
                 ui.add_space(9.0);
                 ui.vertical_centered(|ui| {
+                    if let Some(l) = &self.logo {
+                        ui.add(egui::Image::from_texture(egui::load::SizedTexture::new(l.id(), egui::vec2(44.0, 44.0))))
+                            .on_hover_text(COMPANY);
+                        ui.add_space(10.0);
+                    }
                     for (p, icon, tip) in [(Page::Images, Icon::Images, "Bilder"), (Page::Relief, Icon::Relief, "Relief-Regler"), (Page::Export, Icon::Export, "Export")] {
                         if theme::rail_button(ui, icon, self.page == p).on_hover_text(tip).clicked() {
                             self.page = p;

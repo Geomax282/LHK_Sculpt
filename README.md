@@ -1,5 +1,9 @@
 # LHK_Sculpt – Bild zu Relief (Rust)
 
+<img src="assets/icon_256.png" width="96" align="right" alt="LHK-Logo">
+
+**Land & Holzkommando JOL GbR**
+
 Erzeugt aus einem Foto ein 3D-Relief (STL/OBJ) mit Bildverwaltung,
 Analyse-Button, Reglern und 3D-Viewer. Läuft auf Windows (x86-64) und macOS
 (Apple Silicon/ARM, Metal-Beschleunigung).

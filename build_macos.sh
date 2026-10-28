@@ -27,15 +27,24 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
   <key>CFBundleName</key><string>LHK_Sculpt</string>
   <key>CFBundleDisplayName</key><string>LHK_Sculpt</string>
   <key>CFBundleIdentifier</key><string>de.lhk.sculpt</string>
-  <key>CFBundleVersion</key><string>0.1.0</string>
-  <key>CFBundleShortVersionString</key><string>0.1.0</string>
+  <key>CFBundleVersion</key><string>0.1.1</string>
+  <key>CFBundleShortVersionString</key><string>0.1.1</string>
   <key>CFBundleExecutable</key><string>LHK_Sculpt</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>LSMinimumSystemVersion</key><string>12.0</string>
   <key>NSHighResolutionCapable</key><true/>
 </dict>
 </plist>
 PLIST
+# app icon (assets/icon.png -> AppIcon.icns)
+ICONSET=$(mktemp -d)/AppIcon.iconset
+mkdir -p "$ICONSET"
+for s in 16 32 128 256 512; do
+  sips -z $s $s assets/icon.png --out "$ICONSET/icon_${s}x${s}.png" >/dev/null
+  sips -z $((s * 2)) $((s * 2)) assets/icon.png --out "$ICONSET/icon_${s}x${s}@2x.png" >/dev/null
+done
+iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
 if [ -d models ]; then
   cp -R models "$APP/Contents/Resources/models"
 fi
