@@ -70,7 +70,14 @@ lizenziert (CC-BY-NC-4.0) und werden nicht automatisch geladen.
 
 **Windows:** `powershell -File build_windows.ps1` → `dist\LHK_Sculpt.exe`
 
-**macOS (Apple Silicon):**
+**macOS (Apple Silicon):** Fertige App unter **Releases**
+(`LHK_Sculpt-…-macos-arm64.zip`, automatisch gebaut von GitHub Actions).
+Da die App nicht von Apple notarisiert ist, nach dem Entpacken einmal im
+Terminal ausführen:
+```
+xattr -cr LHK_Sculpt.app
+```
+(oder Rechtsklick → Öffnen). Selbst bauen:
 ```
 xcode-select --install          # einmalig
 curl https://sh.rustup.rs -sSf | sh

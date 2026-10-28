@@ -3,6 +3,7 @@
 # portable toolchains) stays local.
 /*
 !/.gitignore
+!/.github/
 !/src/
 !/Cargo.toml
 !/Cargo.lock

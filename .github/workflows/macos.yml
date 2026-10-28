@@ -1,0 +1,42 @@
+# Build the macOS (Apple Silicon) app incl. models and attach it to a release.
+# Start manually (Actions -> "macOS build" -> Run workflow) or by publishing a release.
+name: macOS build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release-Tag, an das die App angehängt wird (z. B. v0.1.1)"
+        required: true
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+    env:
+      TAG: ${{ github.event.inputs.tag || github.event.release.tag_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - name: Rust
+        run: rustup target add aarch64-apple-darwin
+      - name: Modelle laden
+        run: bash fetch_models.sh
+      - name: Bauen
+        run: bash build_macos.sh
+      - name: Paket
+        run: |
+          VER="${TAG#v}"
+          cp README.md THIRD_PARTY_NOTICES.md dist/
+          cd dist
+          ditto -c -k --keepParent LHK_Sculpt.app "LHK_Sculpt-${VER}-macos-arm64.zip"
+          ls -lh
+      - name: An Release anhängen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" dist/LHK_Sculpt-*-macos-arm64.zip --clobber
